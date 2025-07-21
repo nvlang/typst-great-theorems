@@ -34,19 +34,21 @@
   if counter != none {
     return (title: none, numbering: numbering, prefix: prefix, titlix: titlix, suffix: suffix, bodyfmt: bodyfmt, number: auto, ..local_block_args, body) => {
       figure(kind: "great-theorem-counted", supplement: blocktitle, outlined: false)[#block(width: 100%, ..global_block_args.named(), ..local_block_args.named())[
-        #if number == auto [
-          // step and counter
-          #(counter.step)()
-          #{number = context (counter.display)(numbering)}
-          // store counter so reference can get counter value
-          // NOTE: alternatively could store result of counter.get(), but then it would take one more layout iteration
-          #metadata((loc) => { std.numbering(numbering, ..((counter.at)(loc))) })
-          #label("great-theorems:numberfunc")
-        ] else [
-          // store manual number for reference
-          #metadata((loc) => number)
-          #label("great-theorems:numberfunc")
-        ]
+        #block(sticky: true, height: 0pt, spacing: 0pt,
+          if number == auto [
+            // step and counter
+            #(counter.step)()
+            #{number = context (counter.display)(numbering)}
+            // store counter so reference can get counter value
+            // NOTE: alternatively could store result of counter.get(), but then it would take one more layout iteration
+            #metadata((loc) => { std.numbering(numbering, ..((counter.at)(loc))) })
+            #label("great-theorems:numberfunc")
+          ] else [
+            // store manual number for reference
+            #metadata((loc) => number)
+            #label("great-theorems:numberfunc")
+          ]
+        )
         // show content
         #prefix(number)
         #if title != none [#titlix(title)]
